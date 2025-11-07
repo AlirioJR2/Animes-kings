@@ -1,0 +1,50 @@
+nome: Deploy e Quality
+on:
+push:
+branches:
+- main
+workflow_dispatch:
+
+
+permissions:
+
+contents: redad
+pages: write
+id-token: write
+
+concurrency:
+group:  ${{github.workflow}}-${{github.ref}}
+cancel-in-progress: true
+
+
+jobs:
+deploy:
+name: deploy to Githubs
+runs-on: ubuntu-latest
+if:github.ref=='refs/heads/main'
+
+outputs:
+page_url:${{steps.deployment.outputs.page.url}}
+
+
+evironmet:
+name: github-pages
+url: ${{steps.deployment.outputs.page_url}}
+
+steps:
+- name: Checkout code 
+uses: actions/checkout@v4
+
+
+-names: Setup pages
+uses: actions/configure-pages@v4
+
+
+-names: Upload artifact
+uses:actions/upload-pages-artifact@v3
+with:
+path:
+
+~name: Deploy to Github pages
+id: deployment
+uses: actions/Deploy-pages@v4
